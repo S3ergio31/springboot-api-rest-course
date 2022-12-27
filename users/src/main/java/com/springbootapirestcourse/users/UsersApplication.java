@@ -17,4 +17,9 @@ public class UsersApplication {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
+	public ApplicationContext applicationContext() {
+		return new ApplicationContext();
+	}
+
 }

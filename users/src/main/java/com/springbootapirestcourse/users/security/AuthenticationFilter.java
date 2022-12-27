@@ -1,7 +1,10 @@
 package com.springbootapirestcourse.users.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.springbootapirestcourse.users.ApplicationContext;
 import com.springbootapirestcourse.users.model.request.UserLoginRequestModel;
+import com.springbootapirestcourse.users.service.UserService;
+import com.springbootapirestcourse.users.shared.dto.UserDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,6 +51,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         String username = ((User) authResult.getPrincipal()).getUsername();
+        UserService userService = (UserService) ApplicationContext.getBean("userServiceImplementation");
+        UserDto userDto = userService.findByEmail(username);
         String token = Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
@@ -57,5 +62,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 SecurityConstants.HEADER_STRING,
                 SecurityConstants.TOKEN_PREFIX.concat(token)
         );
+        response.addHeader("UserID", userDto.getUserId());
     }
 }
