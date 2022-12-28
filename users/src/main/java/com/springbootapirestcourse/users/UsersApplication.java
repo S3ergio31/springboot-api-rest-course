@@ -1,5 +1,6 @@
 package com.springbootapirestcourse.users;
 
+import com.springbootapirestcourse.users.security.Properties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,11 @@ public class UsersApplication {
 	@Bean
 	public ApplicationContext applicationContext() {
 		return new ApplicationContext();
+	}
+
+	@Bean
+	public Properties getProperties() {
+		return new Properties();
 	}
 
 }

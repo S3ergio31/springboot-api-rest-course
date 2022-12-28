@@ -1,10 +1,16 @@
 package com.springbootapirestcourse.users.security;
 
+import com.springbootapirestcourse.users.ApplicationContext;
+
 public class SecurityConstants {
     public static final long EXPIRATION_TIME = 864000000; //10 DAYS
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
     public static final String SIGN_UP_URL = "/users";
     public static final String LOGIN_URL = "/users/login";
-    public static final String TOKEN_SECRET = "jf456jghu120";
+
+    public static String getTokenSecret(){
+        Properties properties = (Properties) ApplicationContext.getBean("properties");
+        return properties.getJwtSecret();
+    }
 }

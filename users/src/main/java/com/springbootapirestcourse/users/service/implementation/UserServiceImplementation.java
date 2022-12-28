@@ -36,13 +36,28 @@ public class UserServiceImplementation implements UserService {
         UserEntity storedUser = userRepository.save(userEntity);
         UserDto user = new UserDto();
         BeanUtils.copyProperties(storedUser, user);
-        return user ;
+        return user;
     }
 
     @Override
     public UserDto findByEmail(String email) {
-        UserDto userDto = new UserDto();
         UserEntity userEntity = findUserEntityByEmail(email);
+        return buildUserDto(userEntity);
+    }
+
+    @Override
+    public UserDto findByUserId(String id) {
+        UserEntity userEntity = this.userRepository.findByUserId(id);
+
+        if (userEntity == null ){
+            throw new UsernameNotFoundException(id);
+        }
+
+        return buildUserDto(userEntity);
+    }
+
+    private UserDto buildUserDto(UserEntity userEntity) {
+        UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userEntity, userDto);
         return userDto;
     }

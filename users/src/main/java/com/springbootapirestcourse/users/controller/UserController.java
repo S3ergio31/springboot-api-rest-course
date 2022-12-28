@@ -6,7 +6,9 @@ import com.springbootapirestcourse.users.service.UserService;
 import com.springbootapirestcourse.users.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,12 +18,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public String get() {
-        return "Get a user";
+    @GetMapping("/{id}")
+    public UserRest get(@PathVariable String id) {
+        UserRest userRest = new UserRest();
+        UserDto userDto = userService.findByUserId(id);
+        BeanUtils.copyProperties(userDto, userRest);
+        return userRest;
     }
 
-    @PostMapping
+    @PostMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public UserRest create(@RequestBody UserDatailsRequestModel userDatails) {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDatails, userDto);

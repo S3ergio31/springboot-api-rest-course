@@ -23,7 +23,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if(isCreateUserRequest(request)) {
+        if(isException(request)) {
             chain.doFilter(request, response);
             return;
         }
@@ -31,7 +31,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
-    private Boolean isCreateUserRequest(HttpServletRequest request) {
+    private Boolean isException(HttpServletRequest request) {
         return
                 request.getMethod().equals("POST") &&
                 request.getRequestURI().equals(SecurityConstants.SIGN_UP_URL);

@@ -11,7 +11,7 @@ public class Jwt {
                 .builder()
                 .setSubject(payload)
                 .setExpiration(getExpiration())
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
                 .compact();
     }
 
@@ -21,7 +21,7 @@ public class Jwt {
 
     public String decode(String token) {
         return Jwts.parser()
-                .setSigningKey(SecurityConstants.TOKEN_SECRET)
+                .setSigningKey(SecurityConstants.getTokenSecret())
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
