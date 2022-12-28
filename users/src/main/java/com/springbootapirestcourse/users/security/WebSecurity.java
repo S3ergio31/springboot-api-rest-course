@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -43,9 +42,20 @@ public class WebSecurity {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .addFilter(new AuthenticationFilter(authenticationManager()));
+                .addFilter(getAuthenticationFilter())
+                .addFilter(getAuthorizationFilter());
 
         return http.build();
+    }
+
+    private AuthenticationFilter getAuthenticationFilter() throws Exception{
+        AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+        filter.setFilterProcessesUrl(SecurityConstants.LOGIN_URL);
+        return filter;
+    }
+
+    private AuthorizationFilter getAuthorizationFilter() throws Exception{
+        return new AuthorizationFilter(authenticationManager());
     }
 
     @Bean
