@@ -1,7 +1,9 @@
 package com.springbootapirestcourse.users.service.implementation;
 
+import com.springbootapirestcourse.users.exception.UserServiceException;
 import com.springbootapirestcourse.users.io.entity.UserEntity;
 import com.springbootapirestcourse.users.io.repository.UserRepository;
+import com.springbootapirestcourse.users.model.response.ErrorMessages;
 import com.springbootapirestcourse.users.service.UserService;
 import com.springbootapirestcourse.users.shared.Utils;
 import com.springbootapirestcourse.users.shared.dto.UserDto;
@@ -54,6 +56,23 @@ public class UserServiceImplementation implements UserService {
         }
 
         return buildUserDto(userEntity);
+    }
+
+    @Override
+    public UserDto update(String id, UserDto userDto) {
+        UserDto userResponse = new UserDto();
+        UserEntity userToUpdate = userRepository.findByUserId(id);
+
+        if(userToUpdate == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+
+        userToUpdate.setFirstName(userDto.getFirstName());
+        userToUpdate.setLastName(userDto.getLastName());
+        UserEntity updatedUser = userRepository.save(userToUpdate);
+        BeanUtils.copyProperties(updatedUser, userResponse);
+
+        return userResponse;
     }
 
     private UserDto buildUserDto(UserEntity userEntity) {

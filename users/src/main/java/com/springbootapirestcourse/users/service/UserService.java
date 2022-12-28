@@ -7,4 +7,5 @@ public interface UserService extends UserDetailsService {
     public UserDto create(UserDto userDto);
     public UserDto findByEmail(String email);
     public UserDto findByUserId(String id);
+    public UserDto update(String id, UserDto userDto);
 }
