@@ -9,6 +9,8 @@ import com.springbootapirestcourse.users.shared.Utils;
 import com.springbootapirestcourse.users.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImplementation implements UserService {
@@ -82,6 +85,18 @@ public class UserServiceImplementation implements UserService {
             throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         userRepository.delete(userEntity);
+    }
+
+    @Override
+    public List<UserDto> all(Integer page, Integer limit) {
+        List<UserDto> userDtoList = new ArrayList<>();
+        Page<UserEntity> usersPage = userRepository.findAll(PageRequest.of(page, limit));
+        for (UserEntity user: usersPage.getContent()) {
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(user, userDto);
+            userDtoList.add(userDto);
+        }
+        return userDtoList;
     }
 
     private UserDto buildUserDto(UserEntity userEntity) {

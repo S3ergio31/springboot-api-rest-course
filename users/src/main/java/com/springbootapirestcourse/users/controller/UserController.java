@@ -11,9 +11,10 @@ import com.springbootapirestcourse.users.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -28,6 +29,20 @@ public class UserController {
         UserDto userDto = userService.findByUserId(id);
         BeanUtils.copyProperties(userDto, userRest);
         return userRest;
+    }
+
+    @GetMapping
+    public List<UserRest> all(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "50") Integer limit
+    ) {
+        List<UserRest> userRestsList = new ArrayList<>();
+        for (UserDto userDto: userService.all(page, limit)) {
+            UserRest userRest = new UserRest();
+            BeanUtils.copyProperties(userDto, userRest);
+            userRestsList.add(userRest);
+        }
+        return userRestsList;
     }
 
     @PostMapping(
