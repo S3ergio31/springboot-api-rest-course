@@ -3,6 +3,8 @@ package com.springbootapirestcourse.users.controller;
 import com.springbootapirestcourse.users.exception.UserServiceException;
 import com.springbootapirestcourse.users.model.request.UserDatailsRequestModel;
 import com.springbootapirestcourse.users.model.response.ErrorMessages;
+import com.springbootapirestcourse.users.model.response.OperationStatus;
+import com.springbootapirestcourse.users.model.response.OperationStatusModel;
 import com.springbootapirestcourse.users.model.response.UserRest;
 import com.springbootapirestcourse.users.service.UserService;
 import com.springbootapirestcourse.users.shared.dto.UserDto;
@@ -14,11 +16,7 @@ import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(
-    value = "/users",
-    produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-    consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
-)
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -32,7 +30,10 @@ public class UserController {
         return userRest;
     }
 
-    @PostMapping
+    @PostMapping(
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
     public UserRest create(@RequestBody UserDatailsRequestModel userDatails) throws Exception {
         if(userDatails.getFirstName().isEmpty()) {
             throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
@@ -57,8 +58,12 @@ public class UserController {
         return userRest;
     }
 
-    @DeleteMapping
-    public String delete() {
-        return "Delete a user";
+    @DeleteMapping("/{id}")
+    public OperationStatusModel delete(@PathVariable String id) {
+        userService.delete(id);
+        return new OperationStatusModel(
+                OperationStatus.SUCCESSES.name(),
+                RequestOperations.DELETE.name()
+        );
     }
 }

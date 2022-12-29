@@ -8,4 +8,5 @@ public interface UserService extends UserDetailsService {
     public UserDto findByEmail(String email);
     public UserDto findByUserId(String id);
     public UserDto update(String id, UserDto userDto);
+    public void delete(String userId);
 }

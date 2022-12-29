@@ -75,6 +75,15 @@ public class UserServiceImplementation implements UserService {
         return userResponse;
     }
 
+    @Override
+    public void delete(String userId) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if(userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+        userRepository.delete(userEntity);
+    }
+
     private UserDto buildUserDto(UserEntity userEntity) {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userEntity, userDto);
