@@ -1,12 +1,12 @@
 package com.springbootapirestcourse.users.controller;
 
+import com.google.common.reflect.TypeToken;
 import com.springbootapirestcourse.users.exception.UserServiceException;
 import com.springbootapirestcourse.users.model.request.UserDatailsRequestModel;
-import com.springbootapirestcourse.users.model.response.ErrorMessages;
-import com.springbootapirestcourse.users.model.response.OperationStatus;
-import com.springbootapirestcourse.users.model.response.OperationStatusModel;
-import com.springbootapirestcourse.users.model.response.UserRest;
+import com.springbootapirestcourse.users.model.response.*;
+import com.springbootapirestcourse.users.service.AddressService;
 import com.springbootapirestcourse.users.service.UserService;
+import com.springbootapirestcourse.users.shared.dto.AddressDto;
 import com.springbootapirestcourse.users.shared.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,9 @@ public class UserController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private AddressService addressService;
 
     @GetMapping("/{id}")
     public UserRest get(@PathVariable String id) {
@@ -81,5 +85,18 @@ public class UserController {
                 OperationStatus.SUCCESSES.name(),
                 RequestOperations.DELETE.name()
         );
+    }
+
+    @GetMapping("/{id}/address")
+    public List<AddressRest> getUserAddresses(@PathVariable String id) {
+        List<AddressRest> addressRestList = new ArrayList<>();
+        List<AddressDto> userAddresses = addressService.findUserAddresses(id);
+
+        if(userAddresses != null && !userAddresses.isEmpty()) {
+            Type listType = new TypeToken<List<AddressRest>>() {}.getType();
+            return this.modelMapper.map(userAddresses, listType);
+        }
+
+        return addressRestList;
     }
 }
