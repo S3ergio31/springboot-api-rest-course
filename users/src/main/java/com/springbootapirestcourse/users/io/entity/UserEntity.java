@@ -4,14 +4,12 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "users")
 @Data
 public class UserEntity implements Serializable {
-    @Serial
     private static final long serialVersionUID = 4312023915966814242L;
     @Id
     @GeneratedValue

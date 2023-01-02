@@ -3,13 +3,11 @@ package com.springbootapirestcourse.users.io.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serial;
 import java.io.Serializable;
 
 @Entity(name = "addresses")
 @Data
 public class AddressEntity implements Serializable {
-    @Serial
     private static final long serialVersionUID = 6761659378780387962L;
     @Id
     @GeneratedValue
