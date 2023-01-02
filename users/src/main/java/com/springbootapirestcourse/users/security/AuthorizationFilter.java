@@ -34,7 +34,9 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     private Boolean isException(HttpServletRequest request) {
         return
                 request.getMethod().equals("POST") &&
-                request.getRequestURI().equals(SecurityConstants.SIGN_UP_URL);
+                request.getRequestURI().equals(SecurityConstants.SIGN_UP_URL) ||
+                ! request.getRequestURI().startsWith("/users");
+
     }
 
     private void createUsernamePasswordAuthenticationToken(HttpServletRequest request) {

@@ -6,7 +6,9 @@ import com.springbootapirestcourse.users.io.repository.UserRepository;
 import com.springbootapirestcourse.users.model.response.ErrorMessages;
 import com.springbootapirestcourse.users.service.UserService;
 import com.springbootapirestcourse.users.shared.Utils;
+import com.springbootapirestcourse.users.shared.dto.AddressDto;
 import com.springbootapirestcourse.users.shared.dto.UserDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,16 +34,20 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public UserDto create(UserDto userDto) {
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(userDto, userEntity);
+        for(AddressDto addressDto : userDto.getAddresses()){
+            addressDto.setUserDetails(userDto);
+            addressDto.setAddressId(utils.generateId(30));
+        }
+        UserEntity userEntity = this.modelMapper.map(userDto, UserEntity.class);
         userEntity.setEncryptedPassword(passwordEncoder.encode(userDto.getPassword()));
-        userEntity.setUserId(utils.generateUserId(30));
+        userEntity.setUserId(utils.generateId(30));
         UserEntity storedUser = userRepository.save(userEntity);
-        UserDto user = new UserDto();
-        BeanUtils.copyProperties(storedUser, user);
-        return user;
+        return modelMapper.map(storedUser, UserDto.class);
     }
 
     @Override

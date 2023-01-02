@@ -1,6 +1,7 @@
 package com.springbootapirestcourse.users;
 
 import com.springbootapirestcourse.users.security.Properties;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,10 @@ public class UsersApplication {
 	@Bean
 	public Properties getProperties() {
 		return new Properties();
+	}
+
+	@Bean public ModelMapper modelMapper() {
+		return new ModelMapper();
 	}
 
 }
