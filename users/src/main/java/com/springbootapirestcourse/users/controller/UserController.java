@@ -8,6 +8,7 @@ import com.springbootapirestcourse.users.model.response.OperationStatusModel;
 import com.springbootapirestcourse.users.model.response.UserRest;
 import com.springbootapirestcourse.users.service.UserService;
 import com.springbootapirestcourse.users.shared.dto.UserDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,6 +23,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/{id}")
     public UserRest get(@PathVariable String id) {
@@ -54,12 +58,9 @@ public class UserController {
             throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
         }
 
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDatails, userDto);
+        UserDto userDto = this.modelMapper.map(userDatails, UserDto.class);
         UserDto createdUser = this.userService.create(userDto);
-        UserRest userRest = new UserRest();
-        BeanUtils.copyProperties(createdUser, userRest);
-        return userRest;
+        return this.modelMapper.map(createdUser, UserRest.class);
     }
 
     @PutMapping("/{id}")
