@@ -32,10 +32,13 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private Boolean isException(HttpServletRequest request) {
+        System.out.println("Request URI: ".concat(request.getRequestURI()));
+        System.out.println("Request METHOD: ".concat(request.getMethod()));
+        System.out.println("SIGN_UP_URL: ".concat(SecurityConstants.SIGN_UP_URL));
         return
                 request.getMethod().equals("POST") &&
                 request.getRequestURI().equals(SecurityConstants.SIGN_UP_URL) ||
-                ! request.getRequestURI().startsWith("/users");
+                ! request.getRequestURI().startsWith("/springboot-api-rest-courses-users/users");
 
     }
 

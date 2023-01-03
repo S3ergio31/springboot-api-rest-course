@@ -1,7 +1,6 @@
 package com.springbootapirestcourse.users.service;
 
 import com.springbootapirestcourse.users.shared.dto.AddressDto;
-
 import java.util.List;
 
 public interface AddressService {
