@@ -1,5 +1,5 @@
 package com.springbootapirestcourse.users.controller;
 
 public enum RequestOperations {
-    DELETE
+    DELETE, VERIFY_EMAIL
 }

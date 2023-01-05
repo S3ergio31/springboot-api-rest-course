@@ -146,4 +146,13 @@ public class UserController {
         }
         return null;
     }
+
+    @GetMapping("/email-verification")
+    public OperationStatusModel verifyEmailToken(@RequestParam String token) {
+        Boolean isVerified = userService.verifyEmailToken(token);
+        return new OperationStatusModel(
+            isVerified ? OperationStatus.SUCCESSES.name() : OperationStatus.ERROR.name(),
+            RequestOperations.VERIFY_EMAIL.name()
+        );
+    }
 }

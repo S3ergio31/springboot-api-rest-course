@@ -1,8 +1,11 @@
 package com.springbootapirestcourse.users.shared;
 
+import com.springbootapirestcourse.users.security.Jwt;
+import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.Random;
 
 @Service
@@ -23,5 +26,12 @@ public class Utils {
         }
 
         return new String (builder);
+    }
+
+    public static Boolean hasTokenExpired(String token) {
+        Jwt jwt = new Jwt();
+        Date expiration = jwt.decode(token).getExpiration();
+        Date today = new Date();
+        return expiration.before(today);
     }
 }

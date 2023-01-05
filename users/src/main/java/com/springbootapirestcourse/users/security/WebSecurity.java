@@ -2,6 +2,7 @@ package com.springbootapirestcourse.users.security;
 
 
 import com.springbootapirestcourse.users.service.UserService;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,12 +38,13 @@ public class WebSecurity {
         http
                 .csrf()
                 .disable()
+                .headers().frameOptions().disable().and()
                 .authorizeRequests()
-                .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html", "/webjars/**")
+                .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html", "/webjars/**", "/h2-console/**")
                 .permitAll()
-                .and()
-                .authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
+                .permitAll()
+                .antMatchers(HttpMethod.GET, SecurityConstants.VERIFICATION_EMAIL_URL)
                 .permitAll()
                 .anyRequest()
                 .authenticated()

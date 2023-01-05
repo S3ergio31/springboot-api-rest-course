@@ -33,7 +33,7 @@ public class JwtHeaderManager {
         }
 
         token = token.replace(SecurityConstants.TOKEN_PREFIX, "");
-        String payload = jwt.decode(token);
+        String payload = jwt.decode(token).getSubject();
         if(payload != null) {
             return payload;
         }

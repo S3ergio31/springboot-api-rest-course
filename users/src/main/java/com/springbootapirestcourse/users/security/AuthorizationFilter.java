@@ -36,10 +36,10 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         System.out.println("Request METHOD: ".concat(request.getMethod()));
         System.out.println("SIGN_UP_URL: ".concat(SecurityConstants.SIGN_UP_URL));
         return
-                request.getMethod().equals("POST") &&
-                request.getRequestURI().equals(SecurityConstants.SIGN_UP_URL) ||
-                ! request.getRequestURI().startsWith("/springboot-api-rest-courses-users/users");
-
+                (request.getMethod().equals("POST") &&
+                request.getRequestURI().equals("/springboot-api-rest-courses-users" + SecurityConstants.SIGN_UP_URL)) ||
+                request.getRequestURI().contains("h2-console") ||
+                request.getRequestURI().contains("email-verification");
     }
 
     private void createUsernamePasswordAuthenticationToken(HttpServletRequest request) {

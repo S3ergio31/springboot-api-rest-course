@@ -1,5 +1,6 @@
 package com.springbootapirestcourse.users.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -19,11 +20,10 @@ public class Jwt {
         return new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME);
     }
 
-    public String decode(String token) {
+    public Claims decode(String token) {
         return Jwts.parser()
                 .setSigningKey(SecurityConstants.getTokenSecret())
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
     }
 }

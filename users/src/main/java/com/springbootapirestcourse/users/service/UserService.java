@@ -12,4 +12,5 @@ public interface UserService extends UserDetailsService {
     public UserDto update(String id, UserDto userDto);
     public void delete(String userId);
     public List<UserDto> all(Integer page, Integer limit);
+    public  Boolean verifyEmailToken(String token);
 }
