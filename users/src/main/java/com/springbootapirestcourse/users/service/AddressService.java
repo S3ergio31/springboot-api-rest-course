@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface AddressService {
     public List<AddressDto> findUserAddresses(String id);
+
+    public AddressDto findByAddressId(String addressId);
 }

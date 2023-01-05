@@ -34,4 +34,13 @@ public class AddressServiceImplementation implements AddressService {
         Type listType = new TypeToken<List<AddressDto>>() {}.getType();
         return modelMapper.map(userAddresses, listType);
     }
+
+    @Override
+    public AddressDto findByAddressId(String addressId) {
+        AddressEntity addressEntity = addressRepository.findByAddressId(addressId);
+        if (addressEntity == null) {
+            return null;
+        }
+        return modelMapper.map(addressEntity, AddressDto.class);
+    }
 }
