@@ -5,10 +5,12 @@ import com.springbootapirestcourse.users.io.entity.UserEntity;
 import com.springbootapirestcourse.users.io.repository.UserRepository;
 import com.springbootapirestcourse.users.model.response.ErrorMessages;
 import com.springbootapirestcourse.users.security.Jwt;
+import com.springbootapirestcourse.users.service.EmailService;
 import com.springbootapirestcourse.users.service.UserService;
 import com.springbootapirestcourse.users.shared.Utils;
 import com.springbootapirestcourse.users.shared.dto.AddressDto;
 import com.springbootapirestcourse.users.shared.dto.UserDto;
+import com.springbootapirestcourse.users.shared.email.Message;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public UserDto create(UserDto userDto) {
         for(AddressDto addressDto : userDto.getAddresses()){
@@ -50,7 +55,9 @@ public class UserServiceImplementation implements UserService {
         userEntity.setEmailVerificationToken(new Jwt().encode(userEntity.getUserId()));
         userEntity.setEmailVerificationStatus(false);
         UserEntity storedUser = userRepository.save(userEntity);
-        return modelMapper.map(storedUser, UserDto.class);
+        UserDto createdUserDto = modelMapper.map(storedUser, UserDto.class);
+        sendEmailVerificationService(createdUserDto);
+        return createdUserDto;
     }
 
     @Override
@@ -150,5 +157,33 @@ public class UserServiceImplementation implements UserService {
                 true,
                 new ArrayList<>()
         );
+    }
+
+    public void sendEmailVerificationService(UserDto user) {
+        String bodyHtml =
+                "<h1>Please verify your email address</h1>" +
+                "<p>Thank you for registering with our mobile app. To complete registration process and be able to log in," +
+                " click on the following link: " +
+                "<a href='http://localhost:8080/springboot-api-rest-courses-users/email-verification?token=" + user.getEmailVerificationToken() + "'>" +
+                "Final step to complete your registration" + "</a><br/><br/>" +
+                "Thank you! And we are waiting for you inside!"
+                ;
+        String  bodyText =
+                "Please verify your email address" +
+                "Thank you for registering with our mobile app. To complete registration process and be able to log in," +
+                " click on the following link: " +
+                "http://localhost:8080/springboot-api-rest-courses-users/email-verification?token=" + user.getEmailVerificationToken() +
+                "Final step to complete your registration" +
+                "Thank you! And we are waiting for you inside!"
+                ;
+        Message message = Message
+                .builder()
+                .subject("Email verification notification")
+                .recipient(user.getEmail())
+                .sender("sergiofidelis31@hotmail.com")
+                .bodyText(bodyText)
+                .bodyHTML(bodyHtml)
+                .build();
+        emailService.send(message);
     }
 }
